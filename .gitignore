@@ -1,0 +1,20 @@
+# Secrets & live sessions — NEVER commit
+# config.py contains real Telegram API_ID / API_HASH
+config.py
+# *.session is a live Telegram login (full account access)
+*.session
+*.session-journal
+.env
+
+# Local data
+jobs.db
+*.db-journal
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
