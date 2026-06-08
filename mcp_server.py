@@ -41,8 +41,12 @@ def _fmt(jobs: list[dict]) -> list[dict]:
 
 
 @mcp.tool()
-def get_today_jobs(min_score: int = 40, limit: int = 20) -> dict:
-    """Return jobs collected in the last 24 hours, best matches first."""
+def get_today_jobs(min_score: int = 40, limit: int = 3) -> dict:
+    """Return jobs collected in the last 24 hours, best matches first.
+
+    Shows the top 3 by default to keep replies concise; pass a larger `limit`
+    (e.g. when the user asks to "show more") to return more.
+    """
     since = time.time() - 86400
     jobs = db.query_jobs(since_ts=since, min_score=min_score, limit=limit)
     return {"count": len(jobs), "jobs": _fmt(jobs)}

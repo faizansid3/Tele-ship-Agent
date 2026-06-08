@@ -30,3 +30,7 @@ DB_PATH = os.path.join(_HERE, "jobs.db")
 
 # Minimum relevance score (0-100) for a post to be stored as a job.
 MIN_STORE_SCORE = 40
+
+# ── Lean mode (stay under Ollama Cloud free-tier limits) ───────────
+BACKFILL_DEFAULT = 3      # posts per channel scored on startup
+SCORE_DELAY_SECONDS = 4   # pause between AI scoring calls to avoid 429s

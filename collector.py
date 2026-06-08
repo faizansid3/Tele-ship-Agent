@@ -16,7 +16,14 @@ import asyncio
 
 from telethon import TelegramClient, events
 
-from config import API_HASH, API_ID, MIN_STORE_SCORE, SESSION_NAME
+from config import (
+    API_HASH,
+    API_ID,
+    BACKFILL_DEFAULT,
+    MIN_STORE_SCORE,
+    SCORE_DELAY_SECONDS,
+    SESSION_NAME,
+)
 from db import get_profile, hash_text, init_db, job_exists, list_sources, save_job
 from intelligence import analyse
 from hermes_llm import HermesError
@@ -36,6 +43,9 @@ async def process_message(source_name: str, text: str, posted_at):
     except HermesError as e:
         print(f"  ! intelligence failed: {e}")
         return None
+    finally:
+        # Throttle AI calls to stay under Ollama Cloud free-tier limits.
+        await asyncio.sleep(SCORE_DELAY_SECONDS)
 
     if not data["is_job"] or data["score"] < MIN_STORE_SCORE:
         return None
@@ -97,7 +107,7 @@ async def run(backfill_n: int = 0):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--backfill", type=int, default=0,
+    ap.add_argument("--backfill", type=int, default=BACKFILL_DEFAULT,
                     help="analyse the last N messages of each source on start")
     args = ap.parse_args()
     try:
